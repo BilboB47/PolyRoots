@@ -1,0 +1,7 @@
+#include "PolyRoots.h"
+
+#include <iostream>
+
+void test() {
+	std::cout << "test";
+}

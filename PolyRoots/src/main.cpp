@@ -1,6 +1,7 @@
 #include <iostream>
+#include "PolyRoots.h"
 
 int main()
 {
-    std::cout << "Hello ddwdwadawdawdawadawdWorld!\n";
+    test();
 }
