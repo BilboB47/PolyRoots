@@ -1,8 +1,9 @@
-#include "PolyRoots.h"
+﻿#include "PolyRoots.h"
 #include "Config.h"
 
 #include <iostream>
 #include <cmath>
+#include <algorithm> // dla sort
 
 std::vector<double> derivativeFromPoly(const std::vector<double>& coeffs) {
 
@@ -53,13 +54,13 @@ double valueAtX(const std::vector<double>& coeffs,const double& x) {
 	return y;
 }
 
-Point rootExtremumType(const std::vector<double>& coeffs) {
+Point classifyRoot(const std::vector<double>& coeffs) {
 
 	if (coeffs.size() != 2)throw std::invalid_argument("Vector does not represent a linear polynomial");
 	
 	double p = zeroFromLinear(coeffs);
 
-	if (valueAtX(coeffs, p - PRECISION) < 0) {
+	if (valueAtX(coeffs, p - DELTA) < 0) {
 		return Point(p,MINIMUM);
 	}
 	else {
@@ -69,9 +70,9 @@ Point rootExtremumType(const std::vector<double>& coeffs) {
 }
 
 Point rootExtremumType(const std::vector<double>& coeffs, const double x) {
-	if (std::fabs(valueAtX(coeffs, x)) > PRECISION * 10)throw std::invalid_argument("x is not zero point");
+	if (std::fabs(valueAtX(coeffs, x)) > DELTA)throw std::invalid_argument("x is not zero point");
 
-	if (valueAtX(coeffs, x - PRECISION) > 0)return Point(x, MAXIMUM);
+	if (valueAtX(coeffs, x - DELTA) > 0)return Point(x, MAXIMUM);
 	return Point(x, MINIMUM);
 }
 
@@ -104,4 +105,21 @@ double bisection(const  std::vector<double>& coeffs, double left, double right) 
 	return (left + right) / 2.0;
 }
 
+double findRootNewton(const std::vector<double>& coeffs, double root) {
+	const std::vector<double> derivative = derivativeFromPoly(coeffs);
+
+	for (int i = 0;i < PRECISION_NEWTON;i++) {
+		root = root - (valueAtX(coeffs,root)/valueAtX(derivative, root));
+	}
+
+	return root;
+}
+
+double findRootHybrid(const std::vector<double>& coeffs, double left, double right){
+	return findRootNewton(coeffs, bisection(coeffs, left, right));
+}
+
+std::vector<Point> extremumPoly(const std::vector<double>& coeffs) { return{}; }
+
+std::vector<double> rootsPoly(const std::vector<double>& coeffs, const std::vector<Point>& extrema) { return{}; }
 

@@ -18,11 +18,16 @@ double zeroFromLinear(const std::vector<double>& coeffs);
 
 double valueAtX(const std::vector<double>& coeffs, const double& x);  
 
-Point rootExtremumType(const std::vector<double>& coeffs);
+Point classifyRoot(const std::vector<double>& coeffs);
 
 Point rootExtremumType(const std::vector<double>& coeffs, const double x);
 
 double bisection(const std::vector<double>& coeffs,double left, double right);
 
+double findRootNewton(const std::vector<double>& coeffs, double root);
 
+double findRootHybrid(const std::vector<double>& coeffs, double left, double right);
 
+std::vector<Point> extremumPoly(const std::vector<double>& coeffs);
+
+std::vector<double> rootsPoly(const std::vector<double>& coeffs, const std::vector<Point>& extrema);
