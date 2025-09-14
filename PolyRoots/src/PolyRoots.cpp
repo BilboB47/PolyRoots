@@ -1,4 +1,5 @@
 #include "PolyRoots.h"
+#include "Config.h"
 
 #include <iostream>
 #include <cmath>
@@ -42,13 +43,11 @@ double point_zero_from_linear(const std::vector<double>& coeffs){
 }
 
 double value_of_poly_at_x(const std::vector<double>& coeffs,const double& x) {
-	const int max_coeff = coeffs.size();
-	double y = coeffs[max_coeff-1];
-	double curr_power_x = x; 
+	const int size = coeffs.size(); //3 x^(2) +  5x^(1) - 4     
 
-	for (int i = 1;i < max_coeff;i++) {
-		y += coeffs[max_coeff - i - 1] * curr_power_x;
-		curr_power_x *= x;
+	double y = coeffs[0];
+	for (int i = 1;i < size;i++) {
+		y = y * x + coeffs[i];
 	}
 
 	return y;
@@ -60,26 +59,26 @@ Point extrema_from_linear(const std::vector<double>& coeffs) {
 	
 	double p = point_zero_from_linear(coeffs);
 
-	if (value_of_poly_at_x(coeffs, p - 1) < 0) {
-		return {Point(p,MINIMUM)};
+	if (value_of_poly_at_x(coeffs, p - PRECISION) < 0) {
+		return Point(p,MINIMUM);
 	}
 	else {
-		return { Point(p,MAXIMUM) };
+		return Point(p,MAXIMUM);
 	}
 
 }
 
-double bisection_between_2_points(const  std::vector<double>& coeffs, double left, double right, const double precision) {
+double bisection_extrema_between_2_points(const  std::vector<double>& coeffs, double left, double right) {
 	if(left>right) throw std::invalid_argument("Wrong interval");
 
 	double value_left = value_of_poly_at_x(coeffs, left);
 	double value_right = value_of_poly_at_x(coeffs, right);
 
-	if(value_left < 0 && value_right < 0 || value_left > 0 && value_right > 0)throw std::invalid_argument("Wrong interval");
+	if(value_left < 0 && value_right < 0 || value_left > 0 && value_right > 0)throw std::invalid_argument("Not 1 zero point");
 	
 	bool left_positive = value_left > 0;
 
-	while (std::fabs(left - right) > precision) {
+	while (std::fabs(left - right) > PRECISION) {
 
 		double midle = (left + right) / 2.0;
 		double value_midle = value_of_poly_at_x(coeffs, midle);
@@ -95,5 +94,13 @@ double bisection_between_2_points(const  std::vector<double>& coeffs, double lef
 	}
 
 
-	return left;
+	return (left + right) / 2.0;
 }
+
+Point extrema_from_zero(const std::vector<double>& coeffs,const double x){
+	if(std::fabs(value_of_poly_at_x(coeffs,x)) > PRECISION*10)throw std::invalid_argument("x is not zero point");
+
+	if (value_of_poly_at_x(coeffs, x - PRECISION) > 0)return Point(x,MAXIMUM);
+	return Point(x, MINIMUM);
+}
+
