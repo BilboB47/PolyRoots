@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <cmath>
-#include <algorithm> // dla sort
+#include <algorithm>
 
 std::vector<double> derivativeFromPoly(const std::vector<double>& coeffs) {
 
@@ -70,6 +70,9 @@ Point classifyRoot(const std::vector<double>& coeffs) {
 }
 
 Point rootExtremumType(const std::vector<double>& coeffs, const double x) {
+	
+	//double deb = std::fabs(valueAtX(coeffs, x));
+	
 	if (std::fabs(valueAtX(coeffs, x)) > DELTA)throw std::invalid_argument("x is not zero point");
 
 	if (valueAtX(coeffs, x - DELTA) > 0)return Point(x, MAXIMUM);
@@ -119,7 +122,95 @@ double findRootHybrid(const std::vector<double>& coeffs, double left, double rig
 	return findRootNewton(coeffs, bisection(coeffs, left, right));
 }
 
-std::vector<Point> extremumPoly(const std::vector<double>& coeffs) { return{}; }
+std::vector<Point> extremumPolyHelp(const std::vector<double>& coeffs) {
+	
+	std::vector<double> derivative = derivativeFromPoly(coeffs);
 
-std::vector<double> rootsPoly(const std::vector<double>& coeffs, const std::vector<Point>& extrema) { return{}; }
+	if (derivative.size() <= 1) return {};
+	if (derivative.size() == 2) return { classifyRoot(derivative) };
 
+	std::vector<Point> extrema;
+	std::vector<double> zeros = rootsPoly(derivative,false);
+	for (const auto& x : zeros) {
+		if (!isDoubleRoot(derivative, x)) {
+			extrema.push_back(rootExtremumType(derivative, x));
+		}
+	}
+
+	return extrema;
+}
+
+std::vector<Point> extremumPoly(const std::vector<double>& coeffs) {
+	std::vector<double> derivative = derivativeFromPoly(coeffs);
+
+	if (derivative.size() <= 1) return {};
+	if (derivative.size() == 2) return { classifyRoot(derivative) };
+
+	std::vector<Point> extrema;
+	std::vector<double> zeros = rootsPoly(derivative,false);
+	for (const auto& x : zeros) {
+		extrema.push_back(rootExtremumType(derivative, x));
+	}
+
+	return extrema;
+}
+
+std::vector<double> rootsPoly(const std::vector<double>& coeffs,bool isTargetPoly) {
+
+	if (coeffs.size() == 2)return {zeroFromLinear(coeffs)};
+	
+	const std::vector<Point>& extrema = extremumPolyHelp(coeffs);
+
+	std::vector<double> range;
+
+	
+	if(!extrema.empty() && isExtremumHaveRoot(coeffs, extrema[0])) range.push_back(-1000);
+
+	std::vector<double> roots;
+
+
+	if (isTargetPoly) {
+		std::cout << "";
+	}
+
+	for (int i = 0; i < extrema.size();i++) {//watch out
+		if (std::fabs(valueAtX(coeffs, extrema[i].x)) < DELTA)roots.push_back(extrema[i].x);
+		if (isExtremumHaveRoot(coeffs, extrema[i])) {
+			range.push_back(extrema[i].x);
+			continue;
+		}
+		
+		if (isTargetPoly && isDoubleRoot(coeffs, extrema[i].x)){ 
+			roots.push_back(extrema[i].x);
+			range.pop_back();
+		}
+	}
+	range.push_back(1000);
+	
+	for (int i = 1;i < range.size();i++) {
+		roots.push_back(findRootHybrid(coeffs,range[i-1],range[i]));
+	}
+
+	return roots;
+}
+
+bool isExtremumHaveRoot(const std::vector<double>& coeffs,const Point& p) {
+	double y = valueAtX(coeffs, p.x);
+	if (y > 0 && p.state == MINIMUM)return false;
+	if (y < 0 && p.state == MAXIMUM)return false;
+
+	return true;
+}
+
+bool isDoubleRoot(const std::vector<double>& coeffs, const double x) {
+
+	double deb = std::fabs(valueAtX(coeffs, x)) > DELTA;
+
+	if (std::fabs(valueAtX(coeffs, x)) > DELTA)throw std::invalid_argument("x is not zero point");
+
+	double left = valueAtX(coeffs, x - DELTA);
+	double right = valueAtX(coeffs, x + DELTA);
+
+	if (left > 0 && right > 0 || left < 0 && right < 0)return true;
+	return false;
+}
