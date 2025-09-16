@@ -132,7 +132,7 @@ std::vector<Point> extremumPoly(const std::vector<double>& coeffs) {
 	if (derivative.size() == 2) return { classifyRoot(derivative) };
 
 	std::vector<Point> extrema;
-	std::vector<double> zeros = rootsPoly(derivative, false);
+	std::vector<double> zeros = rootsPoly(derivative);
 	for (const auto& x : zeros) {
 		extrema.push_back(rootExtremumType(derivative, x));
 	}
