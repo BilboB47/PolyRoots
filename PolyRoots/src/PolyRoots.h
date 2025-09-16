@@ -28,11 +28,9 @@ double findRootNewton(const std::vector<double>& coeffs, double root);
 
 double findRootHybrid(const std::vector<double>& coeffs, double left, double right);
 
-std::vector<Point> extremumPolyHelp(const std::vector<double>& coeffs);
-
 std::vector<Point> extremumPoly(const std::vector<double>& coeffs);
 
-std::vector<double> rootsPoly(const std::vector<double>& coeffs,bool isTargetPoly);
+std::vector<double> rootsPoly(const std::vector<double>& coeffs);
 
 bool isExtremumHaveRoot(const std::vector<double>& coeffs, const Point& p);
 
