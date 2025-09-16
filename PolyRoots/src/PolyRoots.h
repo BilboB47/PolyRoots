@@ -32,7 +32,7 @@ std::vector<Point> extremumPoly(const std::vector<double>& coeffs);
 
 std::vector<Point> extremumPolyWithoutDouble(const std::vector<double>& coeffs);
 
-std::vector<double> rootsPoly(const std::vector<double>& coeffs, bool isTarget);
+std::vector<double> rootsPoly(const std::vector<double>& coeffs, bool isTarget = true);
 
 bool isExtremumHaveRoot(const std::vector<double>& coeffs, const Point& p);
 

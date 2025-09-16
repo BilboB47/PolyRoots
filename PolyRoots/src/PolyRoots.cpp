@@ -161,7 +161,7 @@ std::vector<double> rootsPoly(const std::vector<double>& coeffs,bool isTarget) {
 	std::vector<Point> extrema;
 
 	if(isTarget)extrema=extremumPoly(coeffs);
-	if(!isTarget)extrema = extremumPolyWithoutDouble(coeffs);
+	if(!isTarget)extrema=extremumPolyWithoutDouble(coeffs);
 
 	std::vector<double> range;
 
@@ -170,11 +170,18 @@ std::vector<double> rootsPoly(const std::vector<double>& coeffs,bool isTarget) {
 
 	std::vector<double> roots;
 
+	if (isTarget) {
+		std::cout << "";
+	}
+
 	for (int i = 0; i < extrema.size();i++) {
 		if (isExtremumHaveRoot(coeffs, extrema[i])) {
 			range.push_back(extrema[i].x);
+		}else {  //watch out
+			if(!range.empty())range.pop_back();
 		}
 	}
+
 	if(extrema[extrema.size()-1].state!=MAXIMUM)range.push_back(1000);
 	
 	for (int i = 1;i < range.size();i++) {
