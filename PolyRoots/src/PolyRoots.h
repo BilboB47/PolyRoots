@@ -30,8 +30,10 @@ double findRootHybrid(const std::vector<double>& coeffs, double left, double rig
 
 std::vector<Point> extremumPoly(const std::vector<double>& coeffs);
 
-std::vector<double> rootsPoly(const std::vector<double>& coeffs);
+std::vector<Point> extremumPolyWithoutDouble(const std::vector<double>& coeffs);
+
+std::vector<double> rootsPoly(const std::vector<double>& coeffs, bool isTarget);
 
 bool isExtremumHaveRoot(const std::vector<double>& coeffs, const Point& p);
 
-bool isDoubleRoot(const std::vector<double>& coeffs, const double x);
+bool isZeroPoint(const std::vector<double>& coeffs, const double x);

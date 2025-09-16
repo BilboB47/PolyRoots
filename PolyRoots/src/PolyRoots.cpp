@@ -132,7 +132,7 @@ std::vector<Point> extremumPoly(const std::vector<double>& coeffs) {
 	if (derivative.size() == 2) return { classifyRoot(derivative) };
 
 	std::vector<Point> extrema;
-	std::vector<double> zeros = rootsPoly(derivative);
+	std::vector<double> zeros = rootsPoly(derivative,false);
 	for (const auto& x : zeros) {
 		extrema.push_back(rootExtremumType(derivative, x));
 	}
@@ -140,10 +140,28 @@ std::vector<Point> extremumPoly(const std::vector<double>& coeffs) {
 	return extrema;
 }
 
-std::vector<double> rootsPoly(const std::vector<double>& coeffs) {
+std::vector<Point> extremumPolyWithoutDouble(const std::vector<double>& coeffs) {
+	std::vector<double> derivative = derivativeFromPoly(coeffs);
+
+	if (derivative.size() <= 1) return {};
+	if (derivative.size() == 2) return { classifyRoot(derivative) };
+
+	std::vector<Point> extrema;
+	std::vector<double> zeros = rootsPoly(derivative,false);
+	for (const auto& x : zeros) {
+		if(!isZeroPoint(coeffs,x))extrema.push_back(rootExtremumType(derivative, x));
+	}
+
+	return extrema;
+}
+
+std::vector<double> rootsPoly(const std::vector<double>& coeffs,bool isTarget) {
 	if (coeffs.size() == 2)return {zeroFromLinear(coeffs)};
 	
-	const std::vector<Point>& extrema = extremumPoly(coeffs);
+	std::vector<Point> extrema;
+
+	if(isTarget)extrema=extremumPoly(coeffs);
+	if(!isTarget)extrema = extremumPolyWithoutDouble(coeffs);
 
 	std::vector<double> range;
 
@@ -157,7 +175,7 @@ std::vector<double> rootsPoly(const std::vector<double>& coeffs) {
 			range.push_back(extrema[i].x);
 		}
 	}
-	range.push_back(1000);
+	if(extrema[extrema.size()-1].state!=MAXIMUM)range.push_back(1000);
 	
 	for (int i = 1;i < range.size();i++) {
 		roots.push_back(findRootHybrid(coeffs,range[i-1],range[i]));
@@ -174,15 +192,7 @@ bool isExtremumHaveRoot(const std::vector<double>& coeffs,const Point& p) {
 	return true;
 }
 
-bool isDoubleRoot(const std::vector<double>& coeffs, const double x) {
-
-	double deb = std::fabs(valueAtX(coeffs, x)) > DELTA;
-
-	if (std::fabs(valueAtX(coeffs, x)) > DELTA)throw std::invalid_argument("x is not zero point");
-
-	double left = valueAtX(coeffs, x - DELTA);
-	double right = valueAtX(coeffs, x + DELTA);
-
-	if (left > 0 && right > 0 || left < 0 && right < 0)return true;
-	return false;
+bool isZeroPoint(const std::vector<double>& coeffs, const double x) {
+	if (std::fabs(valueAtX(coeffs, x)) > DELTA)return false;
+	return true;
 }

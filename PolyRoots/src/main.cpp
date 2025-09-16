@@ -3,7 +3,7 @@
 #include "PolyRoots.h"  
 
 int main() {
-    std::vector<double> input = { 1, -7.7, 20.81, -23.588, 10.182 };
+    std::vector<double> input = { 0.25, 0, -1.5, 2, 0 };//{1,0,-3,2};
     std::cout << polyFromVector(input) << std::endl; 
 
     std::vector<Point> extrema = extremumPoly(input);
@@ -14,7 +14,7 @@ int main() {
         if (e.state == MINIMUM)std::cout << "MINIMUM" << std::endl;
     }
 
-    std::vector<double> roots = rootsPoly(input);
+    std::vector<double> roots = rootsPoly(input,true);
     std::cout << "Roots:" << std::endl;
     for (const auto& r : roots)std::cout << r << std::endl;
 
