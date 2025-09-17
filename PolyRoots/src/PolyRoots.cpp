@@ -125,7 +125,7 @@ double findRootHybrid(const std::vector<double>& coeffs, double left, double rig
 	return findRootNewton(coeffs, bisection(coeffs, left, right));
 }
 
-std::vector<Point> extremumPoly(const std::vector<double>& coeffs) {
+std::vector<Point> extremumPoly(const std::vector<double>& coeffs, bool isTarget) {
 	std::vector<double> derivative = derivativeFromPoly(coeffs);
 
 	if (derivative.size() <= 1) return {};
@@ -134,7 +134,7 @@ std::vector<Point> extremumPoly(const std::vector<double>& coeffs) {
 	std::vector<Point> extrema;
 	std::vector<double> zeros = rootsPoly(derivative,false);
 	for (const auto& x : zeros) {
-		extrema.push_back(rootExtremumType(derivative, x));
+		if (isTarget || !isZeroPoint(coeffs, x)) extrema.push_back(rootExtremumType(derivative, x));
 	}
 
 	return extrema;
@@ -160,8 +160,8 @@ std::vector<double> rootsPoly(const std::vector<double>& coeffs,bool isTarget) {
 	
 	std::vector<Point> extrema;
 
-	if(isTarget)extrema=extremumPoly(coeffs);
-	if(!isTarget)extrema=extremumPolyWithoutDouble(coeffs);
+	extrema=extremumPoly(coeffs, isTarget);
+
 
 	std::vector<double> range;
 

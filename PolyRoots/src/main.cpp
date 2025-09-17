@@ -3,7 +3,7 @@
 #include "PolyRoots.h"  
 
 int main() {
-    std::vector<double> input = { 1, -5, 8, 0, -4, 0 };
+    std::vector<double> input = { 1, -3, -3, 12, 4, -12 };
     std::cout << polyFromVector(input) << std::endl; 
 
     std::vector<Point> extrema = extremumPoly(input);
